@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Pencil, Upload } from "lucide-react";
+import { Plus, Pencil, Upload, Download } from "lucide-react";
 import KitchenModal from "@/components/kitchenModal";
 import * as XLSX from "xlsx";
 
@@ -20,7 +20,39 @@ export default function Kitchen() {
     setOpen(true);
   };
 
-  // ✅ BULK UPLOAD HANDLER
+  /* ===============================
+     📥 DOWNLOAD SAMPLE CSV
+     =============================== */
+  const downloadSampleFile = () => {
+    const sampleData = [
+      ["name", "price", "category", "image", "available"],
+      [
+        "Chicken Burger",
+        "25",
+        "Burgers",
+        "https://via.placeholder.com/300",
+        "true",
+      ],
+      [
+        "French Fries",
+        "10",
+        "Sides",
+        "https://via.placeholder.com/300",
+        "true",
+      ],
+      ["Veg Pizza", "30", "Pizza", "https://via.placeholder.com/300", "false"],
+    ];
+
+    const worksheet = XLSX.utils.aoa_to_sheet(sampleData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Menu");
+
+    XLSX.writeFile(workbook, "menu-upload-sample.xlsx");
+  };
+
+  /* ===============================
+     📤 BULK UPLOAD HANDLER
+     =============================== */
   const handleBulkUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -33,7 +65,6 @@ export default function Kitchen() {
 
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-
       const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
       const formattedMenu = jsonData.map((item, index) => ({
@@ -59,8 +90,17 @@ export default function Kitchen() {
           Menu Items
         </h1>
 
-        <div className="flex gap-2">
-          {/* Bulk Upload */}
+        <div className="flex flex-wrap gap-2">
+          {/* 📥 Download Sample */}
+          <button
+            onClick={downloadSampleFile}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-amber-200 dark:border-amber-900/30 bg-white dark:bg-zinc-900 text-sm font-medium hover:bg-amber-50 dark:hover:bg-zinc-800"
+          >
+            <Download className="w-4 h-4" />
+            Download Sample
+          </button>
+
+          {/* 📤 Bulk Upload */}
           <label className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg border border-amber-200 dark:border-amber-900/30 bg-white dark:bg-zinc-900 text-sm font-medium hover:bg-amber-50 dark:hover:bg-zinc-800">
             <Upload className="w-4 h-4" />
             Bulk Upload
@@ -72,7 +112,7 @@ export default function Kitchen() {
             />
           </label>
 
-          {/* Add Single Item */}
+          {/* ➕ Add Item */}
           <button
             onClick={handleAdd}
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 text-white font-medium hover:scale-105 transition"
