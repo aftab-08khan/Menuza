@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/context/AuthContext";
 import { ShoppingCart, DollarSign, Utensils } from "lucide-react";
 
 export default function DashboardPage() {
@@ -21,6 +22,7 @@ export default function DashboardPage() {
       icon: Utensils,
     },
   ];
+  const { user } = useAuth();
 
   return (
     <div className="space-y-6">
@@ -58,6 +60,8 @@ export default function DashboardPage() {
           💡 Tip: Use the <strong>Orders</strong> page to create new orders and
           print bills instantly.
         </p>
+
+        {}
       </div>
     </div>
   );

@@ -1,11 +1,24 @@
 "use client";
 
-import { X, LayoutDashboard, Store, Users, Settings } from "lucide-react";
+import {
+  X,
+  LayoutDashboard,
+  Store,
+  Users,
+  Settings,
+  LucideHousePlus,
+} from "lucide-react";
 import Link from "next/link";
 
 const menu = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { name: "Kitchen", icon: Store, href: "/dashboard/kitchen" },
+  {
+    name: "Restaurants",
+    icon: LucideHousePlus,
+    href: "/dashboard/restaurants",
+  },
+
   { name: "Orders", icon: Users, href: "/dashboard/orders" },
   { name: "Reports", icon: Users, href: "/dashboard/reports" },
   { name: "Inventory", icon: Users, href: "/dashboard/inventory" },

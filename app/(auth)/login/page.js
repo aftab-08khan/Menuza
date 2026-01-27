@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { ArrowLeft } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -35,28 +34,12 @@ export default function LoginPage() {
       setLoading(true);
       setError("");
 
-      const res = await signInWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      );
+      await login(formData.email, formData.password);
 
-      const userSnap = await getDoc(doc(db, "users", res.user.uid));
-
-      if (!userSnap.exists()) {
-        throw new Error("User record not found");
-      }
-
-      const { role } = userSnap.data();
-
-      // ✅ Only admin & superadmin
-      if (role === "admin" || role === "superadmin") {
-        router.push("/dashboard");
-      } else {
-        throw new Error("Unauthorized role");
-      }
+      // ✅ Single entry point
+      router.push("/dashboard");
     } catch (err) {
-      setError("Invalid credentials or access denied");
+      setError("Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -151,7 +134,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <p className="text-xs text-center text-amber-700 dark:text-amber-300">
-          © Restaurant POS • Admin Access
+          © Restaurant POS • Admin Panel
         </p>
       </div>
     </div>
